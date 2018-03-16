@@ -49,6 +49,8 @@ public class EnlteValidator {
             //System.out.println("filePath:-after editing-"+filePath);
             System.out.println("Please enter your user id");
             String userId = scanner.next();
+             System.out.println("Please enter your wallet id");
+            String walletId = scanner.next();
             System.out.println("Please enter file path to store data locally.");
             filePath = scanner.next();
             if (filePath.contains("/")) {
@@ -62,8 +64,8 @@ public class EnlteValidator {
             System.out.println("Your local DB Path-" + filePath);
             System.out.println("Your app is now listening to ongoing precess...");
             Timer time = new Timer(); // Instantiate Timer Object
-            ScheduledTask st = new ScheduledTask(userId); // Instantiate SheduledTask class
-            time.schedule(st, 0, 20000); // Create Repetitively task for every 1 secs
+            ScheduledTask st = new ScheduledTask(userId,walletId); // Instantiate SheduledTask class
+            time.schedule(st, 10000, 60000); // Create Repetitively task for every 1 secs
         }
     }
 
@@ -78,18 +80,20 @@ public class EnlteValidator {
         private final String mUserId;
         private final ValidateBroadcastedPost postValidator;
         private final ValidateBroadcastedTransaction transactionValidator;
+        private final String mWalletId;
 
-        private ScheduledTask(String userId) {
+        private ScheduledTask(String userId, String walletId) {
             mUserId = userId; //To change body of generated methods, choose Tools | Templates.
-            postValidator =   new ValidateBroadcastedPost(mUserId, filePath);
-            transactionValidator = new ValidateBroadcastedTransaction(mUserId, filePath);
+            mWalletId = walletId;
+            postValidator =   new ValidateBroadcastedPost(mUserId, mWalletId, filePath);
+            transactionValidator = new ValidateBroadcastedTransaction(mUserId, mWalletId, filePath);
         }
 
         public void run() {
             now = new Date(); // initialize date
             System.out.println("Time is :" + now); // Display current time
             //hitBlockChain(mUserId);
-            postValidator.hitBlockChain();
+            //postValidator.hitBlockChain();
             transactionValidator.hitBlockChain();
         }
     }

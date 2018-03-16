@@ -26,9 +26,11 @@ public class ValidateBroadcastedPost {
 
     private final String filePath;
     private final String mUserId;
+    private final String mWalletId;
 
-    public ValidateBroadcastedPost(String userId, String dbPath) {
+    public ValidateBroadcastedPost(String userId, String walletId, String dbPath) {
         this.mUserId = userId;
+        this.mWalletId = walletId;
         this.filePath = dbPath;
     }
 
@@ -39,7 +41,7 @@ public class ValidateBroadcastedPost {
      */
     public void hitBlockChain() {
         try {
-           
+
             DefaultHttpClient httpClient = new DefaultHttpClient();
             HttpPost postRequest = new HttpPost(
                     "http://enlte.com/blockchain/broadcast_hash");
@@ -167,10 +169,10 @@ public class ValidateBroadcastedPost {
                     if (!content.contains(result)) {
                         voteForHash(data_hash, previous_hash, time_stamp, index);
                         utils.Utilities.writeToFile(filePath, content, result);
-                    }else{
-                         System.out.println("Checking for new updates... ");
+                    } else {
+                        System.out.println("Checking for new updates... ");
                     }
-                    
+
                 }
                 //checkBroadcastedHash(data_hash,userId, index);
             } catch (JSONException ex) {
@@ -203,6 +205,7 @@ public class ValidateBroadcastedPost {
             params.put("status", "1");
             params.put("index", index);
             params.put("user_id", mUserId);
+            params.put("wallet_id", mWalletId);
             System.out.println("Doing Vote for new block: " + params.toString());
             StringEntity input = new StringEntity(params.toString());
             input.setContentType("application/json");
@@ -217,7 +220,7 @@ public class ValidateBroadcastedPost {
             String result = EntityUtils.toString(response.getEntity());
             System.out.println("Voting Done: " + result);
             //handleResult(result);
-             System.out.println("Checking for new updates... ");
+            System.out.println("Checking for new updates... ");
         } catch (UnsupportedEncodingException ex) {
             Logger.getLogger(EnlteValidator.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {

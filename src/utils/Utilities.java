@@ -12,6 +12,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.security.MessageDigest;
 
 /**
  *
@@ -67,5 +68,43 @@ public class Utilities {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+    
+     /**
+     * Returns a hexadecimal encoded SHA-256 hash for the input String.
+     *
+     * @param data
+     * @return
+     */
+    public static String sha256Hex(String data) {
+        String result = null;
+        try {
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            byte[] hash = digest.digest(data.getBytes("UTF-8"));
+            return bytesToHex(hash); // make it printable
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return result;
+    }
+
+    /**
+     * Use javax.xml.bind.DatatypeConverter class in JDK to convert byte array
+     * to a hexadecimal string. Note that this generates hexadecimal in upper case.
+     *
+     * @param hash
+     * @return
+     */
+    private static String bytesToHex(byte[] hash) {
+        // Create Hex String
+        StringBuilder hexString = new StringBuilder();
+        for (byte aMessageDigest : hash) {
+            String h = Integer.toHexString(0xFF & aMessageDigest);
+            while (h.length() < 2)
+                h = "0" + h;
+            hexString.append(h);
+        }
+        return hexString.toString();
+        //return DatatypeConverter.printHexBinary(hash);
     }
 }
