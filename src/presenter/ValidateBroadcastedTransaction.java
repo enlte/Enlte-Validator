@@ -63,7 +63,7 @@ public class ValidateBroadcastedTransaction {
                         + response.getStatusLine().getStatusCode());
             }
             String result = EntityUtils.toString(response.getEntity());
-            System.out.println("response:-" + result.trim());
+            System.out.println("Updating local database...");
             System.out.println("\n \n");
             handleResult(result);
         } catch (UnsupportedEncodingException ex) {
@@ -102,7 +102,7 @@ public class ValidateBroadcastedTransaction {
                 String content = "";
                 try {
                     content = utils.Utilities.readFile(filePath);
-                    System.out.println("=================" + filePath);
+                    //System.out.println("=================" + filePath);
                 } catch (IOException ex) {
                     Logger.getLogger(EnlteValidator.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -140,7 +140,7 @@ public class ValidateBroadcastedTransaction {
             String result = EntityUtils.toString(response.getEntity());
 
             int savedIndex = Integer.parseInt(index) + 1;
-            System.out.println("response:-" + result.trim());
+            System.out.println("Found new changes. Process for ongoing block...");
             if (result != null && result.trim().length() > 0 && !result.equals("null")) {
                 handleValidateResult(result.trim(), savedIndex + "", saved_hash);
             }
@@ -217,11 +217,14 @@ public class ValidateBroadcastedTransaction {
                 if (!content.contains(result)) {
                     //if (savedIndex.equals(index) && savedHash.equals(previous_hash)) {
                     //update vote status to db to restrick the further vote.
+                    System.out.println("Total Amount of current block: "+amountSum);
                     voteForHash(maple_dhash, savedHash, time_stamp, amountSum + "", index, "1");
                     utils.Utilities.writeToFile(filePath, content, result);
                     //} else {
                     // voteForHash(data_hash, previous_hash, time_stamp, amount, index, "0");
                     //}
+                }else{
+                    System.out.println("You have already validate this block.");
                 }
                 //System.out.println(" \n Wait for next voting... " );
                 //checkBroadcastedHash(data_hash,userId, index);
@@ -305,8 +308,7 @@ public class ValidateBroadcastedTransaction {
                     amount = "0";
                 }
                 try {
-                    amountSum = amountSum + Double.parseDouble(amount);
-                    System.out.println(amountSum);
+                    amountSum = amountSum + Double.parseDouble(amount);                    
                 } catch (Exception e) {
                 }
 
@@ -330,7 +332,7 @@ public class ValidateBroadcastedTransaction {
      */
     private void voteForHash(String dhash, String phash, String timestamp, String amount, String index, String status) throws JSONException {
         try {
-            System.out.println("Doing Vote for sha: " + dhash);
+            System.out.println("Processing block hash: " + dhash);
             DefaultHttpClient httpClient = new DefaultHttpClient();
 
             HttpPost postRequest = new HttpPost("http://enlte.com/transaction_blockchain/vote_hash");
@@ -367,7 +369,7 @@ public class ValidateBroadcastedTransaction {
                         + response.getStatusLine().getStatusCode());
             }
             String result = EntityUtils.toString(response.getEntity());
-            System.out.println("Voting Done: " + result.trim());
+            System.out.println("You have processed this block. Looking for next..");
             //handleResult(result);
         } catch (UnsupportedEncodingException ex) {
             Logger.getLogger(EnlteValidator.class.getName()).log(Level.SEVERE, null, ex);

@@ -19,7 +19,8 @@ import java.security.MessageDigest;
  * @author Administrator
  */
 public class Utilities {
-     /**
+
+    /**
      * this file is used to read saved recode from db txt file.
      *
      * @return
@@ -42,7 +43,8 @@ public class Utilities {
                 sb.append(System.lineSeparator());
                 line = br.readLine();
             }
-            String everything = sb.toString();
+            String everything = sb.toString().trim();
+            
             return everything;
         } finally {
             br.close();
@@ -56,6 +58,10 @@ public class Utilities {
      * @param result
      */
     public static void writeToFile(String filePath, String content, String result) {
+
+        content = content.trim();
+        result = result.trim();
+        
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(filePath + "/db.txt"))) {
 
             //String content = "Enlte\n";
@@ -63,14 +69,14 @@ public class Utilities {
 
             // no need to close it.
             //bw.close();
-            System.out.println("File updated.");
+            System.out.println("");
 
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-    
-     /**
+
+    /**
      * Returns a hexadecimal encoded SHA-256 hash for the input String.
      *
      * @param data
@@ -90,7 +96,8 @@ public class Utilities {
 
     /**
      * Use javax.xml.bind.DatatypeConverter class in JDK to convert byte array
-     * to a hexadecimal string. Note that this generates hexadecimal in upper case.
+     * to a hexadecimal string. Note that this generates hexadecimal in upper
+     * case.
      *
      * @param hash
      * @return
@@ -100,8 +107,9 @@ public class Utilities {
         StringBuilder hexString = new StringBuilder();
         for (byte aMessageDigest : hash) {
             String h = Integer.toHexString(0xFF & aMessageDigest);
-            while (h.length() < 2)
+            while (h.length() < 2) {
                 h = "0" + h;
+            }
             hexString.append(h);
         }
         return hexString.toString();
